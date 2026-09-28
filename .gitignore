@@ -26,3 +26,5 @@ dist-ssr
 # Google Drive / local
 desktop.ini
 zaglabs_website/
+.vercel
+.env*
