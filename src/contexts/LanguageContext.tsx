@@ -111,6 +111,30 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Footer
     'footer.rights': 'All rights reserved.',
+    'footer.tagline': 'An engineering lab in Veliko Tarnovo, Bulgaria, building AI-powered software products for the world.',
+    'footer.explore': 'Explore',
+    'footer.company': 'Company',
+    'footer.getInTouch': 'Get in touch',
+
+    // Extras (redesign)
+    'hero.badge': 'Software Lab from the Heart of Bulgaria',
+    'hero.stat.products': 'Products built in-house',
+    'hero.stat.ai': 'AI in every workflow',
+    'hero.stat.eu': 'Headquartered in the EU',
+    'tech.cloud.desc': 'Resilient, scalable infrastructure designed for the cloud from day one.',
+    'tech.web.desc': 'Fast, polished apps across web, desktop and mobile.',
+    'tech.ai.desc': 'LLMs, agents and machine learning woven into real products — not bolted on.',
+    'tech.automation.desc': 'Pipelines and automations that turn data into decisions.',
+    'tech.security.desc': 'Security and performance engineered in, not patched later.',
+    'tech.devops.desc': 'Continuous delivery that keeps shipping safe and frequent.',
+    'products.visit': 'Visit',
+    'products.count': 'products',
+    'culture.gallery': 'Life at the lab',
+    'contact.office': 'Office',
+    'contact.cta': 'Send us a message',
+    'contact.cta.desc': 'Tell us about your idea, partnership or project — we usually reply within one business day.',
+    'nav.backToTop': 'Back to top',
+    'nav.menu': 'Menu',
   },
   bg: {
     // Navigation
@@ -214,6 +238,30 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Footer
     'footer.rights': 'Всички права запазени.',
+    'footer.tagline': 'Инженерна лаборатория във Велико Търново, България, която създава софтуерни продукти с AI за целия свят.',
+    'footer.explore': 'Разгледай',
+    'footer.company': 'Компания',
+    'footer.getInTouch': 'Свържете се',
+
+    // Extras (redesign)
+    'hero.badge': 'Софтуерна лаборатория от сърцето на България',
+    'hero.stat.products': 'Собствени продукта',
+    'hero.stat.ai': 'AI във всеки процес',
+    'hero.stat.eu': 'Централа в ЕС',
+    'tech.cloud.desc': 'Устойчива и мащабируема инфраструктура, проектирана за облака от първия ден.',
+    'tech.web.desc': 'Бързи и изпипани приложения за уеб, десктоп и мобилни устройства.',
+    'tech.ai.desc': 'LLM модели, агенти и машинно обучение, вградени в реални продукти — не добавени накрая.',
+    'tech.automation.desc': 'Процеси и автоматизации, които превръщат данните в решения.',
+    'tech.security.desc': 'Сигурност и производителност, заложени от самото начало.',
+    'tech.devops.desc': 'Непрекъсната доставка, която прави всяко пускане сигурно и често.',
+    'products.visit': 'Посети',
+    'products.count': 'продукта',
+    'culture.gallery': 'Животът в лабораторията',
+    'contact.office': 'Офис',
+    'contact.cta': 'Изпратете ни съобщение',
+    'contact.cta.desc': 'Разкажете ни за вашата идея, партньорство или проект — обикновено отговаряме до един работен ден.',
+    'nav.backToTop': 'Към началото',
+    'nav.menu': 'Меню',
     
   }
 };

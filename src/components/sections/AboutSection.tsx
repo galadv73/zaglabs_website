@@ -1,139 +1,126 @@
+import { useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Lightbulb, Target, Handshake } from 'lucide-react';
-import { motion, Variants } from 'framer-motion';
+import { Lightbulb, Target, Handshake, MapPin, Sparkles } from 'lucide-react';
+import { motion, useScroll, useTransform, Variants } from 'framer-motion';
+import SectionHeading from '@/components/SectionHeading';
 import aboutBulgariaImage from '@/assets/about-bulgaria.jpg';
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
 
 const AboutSection = () => {
   const { t } = useLanguage();
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
+  const imageRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: imageRef, offset: ['start end', 'end start'] });
+  const imageY = useTransform(scrollYProgress, [0, 1], ['-8%', '8%']);
+  const badgeY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
   const values = [
-    { icon: Lightbulb, titleKey: 'about.value.innovation', descKey: 'about.value.innovation.desc', color: 'primary' },
-    { icon: Target, titleKey: 'about.value.quality', descKey: 'about.value.quality.desc', color: 'accent' },
-    { icon: Handshake, titleKey: 'about.value.partnership', descKey: 'about.value.partnership.desc', color: 'primary' },
+    { icon: Lightbulb, titleKey: 'about.value.innovation', descKey: 'about.value.innovation.desc' },
+    { icon: Target, titleKey: 'about.value.quality', descKey: 'about.value.quality.desc' },
+    { icon: Handshake, titleKey: 'about.value.partnership', descKey: 'about.value.partnership.desc' },
   ];
 
   return (
-    <section id="about" className="py-24 lg:py-32 bg-secondary/30">
+    <section id="about" className="relative overflow-hidden py-24 lg:py-36">
+      <div aria-hidden className="absolute inset-0 -z-10 bg-dots mask-fade-y opacity-60" />
+      <div aria-hidden className="absolute -right-40 top-20 -z-10 h-96 w-96 rounded-full bg-[hsl(var(--brand-1)/0.12)] blur-3xl" />
+
       <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Text Content */}
-          <motion.div 
-            className="space-y-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
+        <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-20">
+          {/* Visual */}
+          <motion.div
+            ref={imageRef}
+            className="relative order-2 lg:order-1"
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <motion.div variants={itemVariants}>
-              <p className="text-sm font-medium text-primary mb-2">{t('about.title')}</p>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                {t('about.subtitle')}
-              </h2>
-            </motion.div>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl shadow-primary/10 sm:aspect-[4/3] lg:aspect-[4/5]">
+              <motion.img
+                src={aboutBulgariaImage}
+                alt="Engineering excellence from Bulgaria"
+                style={{ y: imageY, scale: 1.18 }}
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            </div>
 
-            <motion.div 
-              className="space-y-6 text-muted-foreground leading-relaxed"
-              variants={itemVariants}
+            {/* Floating glass badges */}
+            <motion.div
+              style={{ y: badgeY }}
+              className="glass absolute -right-4 top-10 flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl sm:-right-8"
             >
-              <p>{t('about.p1')}</p>
-              <p>{t('about.p2')}</p>
-              <p>{t('about.p3')}</p>
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient text-white">
+                <MapPin className="h-5 w-5" />
+              </span>
+              <div className="text-sm">
+                <p className="font-semibold text-foreground">Veliko Tarnovo</p>
+                <p className="text-muted-foreground">Bulgaria · EU</p>
+              </div>
+            </motion.div>
+            <motion.div
+              className="glass absolute -left-4 bottom-10 flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl sm:-left-8"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-foreground text-background">
+                <Sparkles className="h-5 w-5" />
+              </span>
+              <div className="text-sm">
+                <p className="font-semibold text-foreground">AI-first</p>
+                <p className="text-muted-foreground">{t('hero.stat.ai')}</p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Copy */}
+          <div className="order-1 lg:order-2">
+            <SectionHeading eyebrow={t('about.title')} title={t('about.subtitle')} align="left" className="mb-8 lg:mb-8" />
+
+            <motion.div
+              className="space-y-5 text-lg leading-relaxed text-muted-foreground"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-80px' }}
+              variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+            >
+              <motion.p variants={itemVariants}>{t('about.p1')}</motion.p>
+              <motion.p variants={itemVariants}>{t('about.p2')}</motion.p>
+              <motion.p variants={itemVariants} className="border-l-2 border-primary/40 pl-4 font-medium text-foreground">
+                {t('about.p3')}
+              </motion.p>
             </motion.div>
 
-            {/* Core Values */}
-            <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-border"
-              variants={containerVariants}
+            <motion.div
+              className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-60px' }}
+              variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } } }}
             >
               {values.map((value) => {
                 const Icon = value.icon;
                 return (
-                  <motion.div 
+                  <motion.div
                     key={value.titleKey}
-                    className="text-center"
                     variants={itemVariants}
-                    whileHover={{ y: -3 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
+                    whileHover={{ y: -6 }}
+                    className="gradient-border group rounded-2xl p-5 transition-shadow hover:shadow-xl hover:shadow-primary/10"
                   >
-                    <motion.div 
-                      className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${
-                        value.color === 'primary' ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent-foreground'
-                      } mb-3`}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: 'spring', stiffness: 300 }}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </motion.div>
-                    <p className="text-base sm:text-lg font-bold text-foreground">{t(value.titleKey)}</p>
+                    <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-brand-gradient group-hover:text-white group-hover:rotate-6">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <p className="font-display text-lg font-bold text-foreground">{t(value.titleKey)}</p>
                     <p className="text-sm text-muted-foreground">{t(value.descKey)}</p>
                   </motion.div>
                 );
               })}
             </motion.div>
-          </motion.div>
-
-          {/* Visual */}
-          <motion.div 
-            className="relative"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            <motion.div 
-              className="aspect-[4/3] rounded-3xl bg-gradient-to-br from-primary/10 via-secondary to-accent/10 p-1"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: 'spring', stiffness: 200 }}
-            >
-              <div className="w-full h-full rounded-3xl bg-background overflow-hidden">
-                <motion.img 
-                  src={aboutBulgariaImage} 
-                  alt="Engineering excellence from Bulgaria" 
-                  className="w-full h-full object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </motion.div>
-            {/* Floating elements */}
-            <motion.div 
-              className="absolute -top-4 -right-4 w-20 h-20 rounded-2xl bg-primary/10 blur-2xl"
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <motion.div 
-              className="absolute -bottom-4 -left-4 w-20 h-20 rounded-2xl bg-accent/10 blur-2xl"
-              animate={{ 
-                scale: [1, 1.3, 1],
-                opacity: [0.5, 0.7, 0.5],
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

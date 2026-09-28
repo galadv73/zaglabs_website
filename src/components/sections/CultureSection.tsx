@@ -1,8 +1,10 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Building2, Dumbbell, Coffee, PartyPopper, GraduationCap, Heart } from 'lucide-react';
-import { ScrollAnimationWrapper } from '@/components/ScrollAnimationWrapper';
+import { motion } from 'framer-motion';
+import SectionHeading from '@/components/SectionHeading';
+import Marquee from '@/components/Marquee';
+import { cn } from '@/lib/utils';
 
-// Import culture images
 import officeOverview from '@/assets/culture/office-overview.jpg';
 import teamWorking from '@/assets/culture/team-working.jpg';
 import developerFocus from '@/assets/culture/developer-focus.jpg';
@@ -21,89 +23,82 @@ const CultureSection = () => {
     { icon: Heart, titleKey: 'culture.trust', descKey: 'culture.trust.desc' },
   ];
 
-  const cultureImages = [
-    { src: officeOverview, alt: 'Modern office space', large: true },
-    { src: teamWorking, alt: 'Team collaboration' },
-    { src: developerFocus, alt: 'Developer at work' },
-    { src: officeGym, alt: 'Office gym' },
-    { src: gameRoom, alt: 'Game room with pool and ping pong' },
+  // Bento gallery; captions reuse the culture titles
+  const gallery = [
+    { src: officeOverview, captionKey: 'culture.office', className: 'col-span-2 row-span-2' },
+    { src: teamWorking, captionKey: 'culture.learning', className: 'col-span-2 md:col-span-1' },
+    { src: developerFocus, captionKey: 'culture.trust', className: '' },
+    { src: officeGym, captionKey: 'culture.gym', className: '' },
+    { src: gameRoom, captionKey: 'culture.relax', className: 'col-span-2 md:col-span-1' },
   ];
 
   return (
-    <section id="culture" className="py-24 lg:py-32 relative overflow-hidden">
-      {/* Warm gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
-      
-      <div className="relative container mx-auto px-6">
-        {/* Header */}
-        <ScrollAnimationWrapper className="max-w-2xl mx-auto text-center mb-16">
-          <p className="text-sm font-medium text-primary mb-2">{t('culture.title')}</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            {t('culture.subtitle')}
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            {t('culture.description')}
-          </p>
-        </ScrollAnimationWrapper>
+    <section id="culture" className="relative overflow-hidden bg-secondary/40 py-24 lg:py-36">
+      <div aria-hidden className="absolute inset-0 bg-dots mask-fade-y opacity-50" />
+      <div className="container relative mx-auto px-6">
+        <SectionHeading eyebrow={t('culture.title')} title={t('culture.subtitle')} description={t('culture.description')} />
 
-        {/* Culture Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {/* Photo gallery */}
+        <div className="mx-auto grid max-w-6xl auto-rows-[160px] grid-cols-2 gap-4 sm:auto-rows-[200px] md:grid-cols-4 lg:auto-rows-[230px]">
+          {gallery.map((img, i) => (
+            <motion.figure
+              key={img.captionKey}
+              className={cn('group relative overflow-hidden rounded-3xl', img.className)}
+              initial={{ opacity: 0, scale: 0.94 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <img
+                src={img.src}
+                alt={t(img.captionKey)}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100" />
+              <figcaption className="absolute bottom-4 left-4 right-4 translate-y-2 font-display text-lg font-semibold text-white opacity-90 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                {t(img.captionKey)}
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
+
+        {/* Perks */}
+        <div className="mx-auto mt-16 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cultureItems.map((item, index) => {
             const Icon = item.icon;
-            const delayIndex = ((index % 3) + 1) as 1 | 2 | 3;
             return (
-              <ScrollAnimationWrapper
+              <motion.div
                 key={item.titleKey}
-                delay={delayIndex}
-                className="group p-6 rounded-2xl bg-background border border-border hover:border-primary/30 hover:bg-secondary/30 transition-all duration-300"
+                className="group flex items-start gap-4 rounded-2xl p-5 transition-colors hover:bg-background"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: (index % 3) * 0.08 }}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
-                    <Icon className="w-6 h-6 text-primary" strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-1">
-                      {t(item.titleKey)}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t(item.descKey)}
-                    </p>
-                  </div>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-background text-primary shadow-sm ring-1 ring-border transition-all duration-300 group-hover:bg-brand-gradient group-hover:text-white group-hover:ring-transparent">
+                  <Icon className="h-5 w-5" strokeWidth={1.7} />
+                </span>
+                <div>
+                  <h3 className="mb-1 font-display text-lg font-bold text-foreground">{t(item.titleKey)}</h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{t(item.descKey)}</p>
                 </div>
-              </ScrollAnimationWrapper>
+              </motion.div>
             );
           })}
         </div>
+      </div>
 
-        {/* Photo Collage */}
-        <ScrollAnimationWrapper className="mt-16 max-w-5xl mx-auto">
-          <div className="grid grid-cols-4 gap-4">
-            {/* Main large photo - Office Overview */}
-            <div className="col-span-2 row-span-2 rounded-2xl overflow-hidden relative group">
-              <img 
-                src={cultureImages[0].src} 
-                alt={cultureImages[0].alt}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-            
-            {/* Smaller photos */}
-            {cultureImages.slice(1).map((image, index) => (
-              <div 
-                key={index}
-                className="rounded-2xl overflow-hidden relative group aspect-square"
-              >
-                <img 
-                  src={image.src} 
-                  alt={image.alt}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-            ))}
-          </div>
-        </ScrollAnimationWrapper>
+      {/* Values ticker */}
+      <div className="relative -mx-[2%] mt-20 w-[104%] -rotate-1 bg-foreground py-4 text-background">
+        <Marquee>
+          {cultureItems.map((item) => (
+            <span key={item.titleKey} className="mx-6 flex items-center gap-6 whitespace-nowrap font-display text-2xl font-bold uppercase tracking-tight">
+              {t(item.titleKey)}
+              <span className="text-gradient">✦</span>
+            </span>
+          ))}
+        </Marquee>
       </div>
     </section>
   );

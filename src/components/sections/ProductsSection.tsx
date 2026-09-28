@@ -1,27 +1,100 @@
-import { useState } from 'react';
+import { MouseEvent } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Users, Zap, Cpu, ExternalLink } from 'lucide-react';
-import { motion, Variants } from 'framer-motion';
+import { Users, Zap, Cpu, ArrowUpRight } from 'lucide-react';
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
+import SectionHeading from '@/components/SectionHeading';
+import { products, Product } from '@/data/products';
 
-import getlinkedImg from '@/assets/products/getlinked-screenshot.png';
-import affiliatemanagerImg from '@/assets/products/affiliatemanager-screenshot.png';
-import octotoolsImg from '@/assets/products/octotools-screenshot.png';
-import happyofficeImg from '@/assets/products/happyoffice-screenshot.png';
-import aroundzImg from '@/assets/products/aroundz-screenshot.png';
-import skilliImg from '@/assets/products/skilli-screenshot.png';
-import vibbiImg from '@/assets/products/vibbi-screenshot.png';
-import aaccImg from '@/assets/products/aacc-screenshot.png';
+const ProductCard = ({ product, index }: { product: Product; index: number }) => {
+  const { t } = useLanguage();
+  const name = t(product.nameKey);
 
-interface Product {
-  nameKey: string;
-  descKey: string;
-  image: string;
-  url?: string;
-}
+  // Subtle 3D tilt + glare that follows the cursor
+  const px = useMotionValue(0.5);
+  const py = useMotionValue(0.5);
+  const rx = useSpring(useTransform(py, [0, 1], [7, -7]), { stiffness: 200, damping: 20 });
+  const ry = useSpring(useTransform(px, [0, 1], [-7, 7]), { stiffness: 200, damping: 20 });
+  const glareX = useTransform(px, (v) => `${v * 100}%`);
+  const glareY = useTransform(py, (v) => `${v * 100}%`);
+  const glare = useMotionTemplate`radial-gradient(500px circle at ${glareX} ${glareY}, hsl(var(--brand-1) / 0.16), transparent 40%)`;
+
+  const onMove = (e: MouseEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    px.set((e.clientX - r.left) / r.width);
+    py.set((e.clientY - r.top) / r.height);
+  };
+  const onLeave = () => {
+    px.set(0.5);
+    py.set(0.5);
+  };
+
+  const body = (
+    <motion.div
+      style={{ rotateX: rx, rotateY: ry, transformPerspective: 1000 }}
+      className="gradient-border group relative h-full overflow-hidden rounded-3xl transition-shadow duration-500 hover:shadow-2xl hover:shadow-primary/15"
+    >
+      <motion.div aria-hidden style={{ background: glare }} className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+      {/* Screenshot in browser chrome */}
+      <div className="relative m-3 mb-0 overflow-hidden rounded-2xl border border-border/70 bg-muted/40">
+        <div className="flex items-center gap-1.5 border-b border-border/60 bg-muted/70 px-3 py-2">
+          <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
+          <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
+          <span className="h-2 w-2 rounded-full bg-[#28c840]" />
+          {product.url && (
+            <span className="ml-2 truncate text-[10px] text-muted-foreground">
+              {product.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+            </span>
+          )}
+          <span className="ml-auto font-mono text-[10px] text-muted-foreground">{String(index + 1).padStart(2, '0')}</span>
+        </div>
+        <div className="aspect-[16/10] overflow-hidden">
+          <img
+            src={product.image}
+            alt={name}
+            loading="lazy"
+            className="h-full w-full object-cover object-top transition-transform duration-[1.5s] ease-out group-hover:scale-105"
+          />
+        </div>
+      </div>
+
+      <div className="p-6">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <h3 className="text-xl font-bold text-foreground">{name}</h3>
+          {product.url && (
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-all duration-300 group-hover:rotate-45 group-hover:border-transparent group-hover:bg-brand-gradient group-hover:text-white">
+              <ArrowUpRight className="h-4 w-4" />
+            </span>
+          )}
+        </div>
+        <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{t(product.descKey)}</p>
+      </div>
+    </motion.div>
+  );
+
+  return (
+    <motion.div
+      className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.7, delay: (index % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+    >
+      {product.url ? (
+        <a href={product.url} target="_blank" rel="noopener noreferrer" aria-label={`${t('products.visit')} ${name}`} className="block h-full">
+          {body}
+        </a>
+      ) : (
+        body
+      )}
+    </motion.div>
+  );
+};
 
 const ProductsSection = () => {
   const { t } = useLanguage();
-  const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
 
   const approaches = [
     { icon: Users, titleKey: 'products.approach.dedicated', descKey: 'products.approach.dedicated.desc' },
@@ -29,214 +102,64 @@ const ProductsSection = () => {
     { icon: Cpu, titleKey: 'products.approach.ai', descKey: 'products.approach.ai.desc' },
   ];
 
-  const products: Product[] = [
-    { nameKey: 'products.getlinked.name', descKey: 'products.getlinked.desc', image: getlinkedImg },
-    { nameKey: 'products.affiliatemanager.name', descKey: 'products.affiliatemanager.desc', image: affiliatemanagerImg, url: 'https://affiliatemanager.ai' },
-    { nameKey: 'products.octotools.name', descKey: 'products.octotools.desc', image: octotoolsImg, url: 'https://octotools.io' },
-    { nameKey: 'products.happyoffice.name', descKey: 'products.happyoffice.desc', image: happyofficeImg, url: 'https://happyoffice.space' },
-    { nameKey: 'products.aroundz.name', descKey: 'products.aroundz.desc', image: aroundzImg, url: 'https://www.aroundz.me/' },
-    { nameKey: 'products.skilli.name', descKey: 'products.skilli.desc', image: skilliImg, url: 'https://www.skilli.app/' },
-    { nameKey: 'products.vibbi.name', descKey: 'products.vibbi.desc', image: vibbiImg, url: 'https://www.vibbi.world/' },
-    { nameKey: 'products.aacc.name', descKey: 'products.aacc.desc', image: aaccImg, url: 'https://www.aacc.software/' },
-  ];
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
-
   return (
-    <section id="products" className="py-24 lg:py-32 bg-secondary/30">
+    <section id="products" className="relative overflow-hidden py-24 lg:py-36">
+      <div aria-hidden className="absolute left-1/2 top-0 -z-10 h-[40rem] w-[60rem] -translate-x-1/2 rounded-full bg-[hsl(var(--brand-3)/0.08)] blur-3xl" />
       <div className="container mx-auto px-6">
-        {/* Header */}
-        <motion.div 
-          className="max-w-2xl mx-auto text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6 }}
-        >
-          <p className="text-sm font-medium text-primary mb-2">{t('products.title')}</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            {t('products.subtitle')}
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            {t('products.description')}
-          </p>
-        </motion.div>
+        <SectionHeading eyebrow={t('products.title')} title={t('products.subtitle')} description={t('products.description')} />
 
-        {/* Approach Cards */}
-        <div className="max-w-5xl mx-auto">
-          <motion.h3 
-            className="text-xl font-semibold text-foreground text-center mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
+        {/* Approach — three connected steps */}
+        <div className="relative mx-auto mb-24 max-w-5xl">
+          <p className="mb-10 text-center text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             {t('products.approach.title')}
-          </motion.h3>
-          
-          <motion.div 
-            className="grid md:grid-cols-3 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-          >
+          </p>
+          <div className="relative grid gap-10 md:grid-cols-3 md:gap-6">
+            <motion.div
+              aria-hidden
+              className="absolute left-[16.66%] right-[16.66%] top-7 hidden h-px origin-left bg-brand-gradient md:block"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            />
             {approaches.map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.div
                   key={item.titleKey}
-                  variants={itemVariants}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  className="relative p-8 rounded-2xl bg-background border border-border group hover:shadow-xl hover:shadow-primary/5 transition-shadow duration-300"
+                  className="relative text-center"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-80px' }}
+                  transition={{ duration: 0.6, delay: 0.2 + index * 0.2 }}
                 >
-                  {/* Number badge */}
-                  <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-sm font-bold text-primary-foreground">
-                    {index + 1}
+                  <div className="relative mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-background shadow-lg ring-1 ring-border">
+                    <Icon className="h-6 w-6 text-primary" strokeWidth={1.6} />
+                    <span className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-brand-gradient text-[11px] font-bold text-white">
+                      {index + 1}
+                    </span>
                   </div>
-                  
-                  <motion.div 
-                    className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mb-6"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                  >
-                    <Icon className="w-8 h-8 text-primary" strokeWidth={1.5} />
-                  </motion.div>
-                  
-                  <h4 className="text-lg font-semibold text-foreground mb-3">
-                    {t(item.titleKey)}
-                  </h4>
-                  <p className="text-muted-foreground">
-                    {t(item.descKey)}
-                  </p>
+                  <h4 className="mb-2 font-display text-lg font-bold text-foreground">{t(item.titleKey)}</h4>
+                  <p className="mx-auto max-w-xs text-sm text-muted-foreground">{t(item.descKey)}</p>
                 </motion.div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
 
-        {/* Our Products */}
-        <div className="mt-20 max-w-5xl mx-auto">
-          <motion.h3 
-            className="text-xl font-semibold text-foreground text-center mb-10"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            {t('products.our')}
-          </motion.h3>
-          
-          <motion.div 
-            className="flex flex-wrap justify-center gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-          >
-          {products.map((product) => {
-              const productName = t(product.nameKey);
-              const productDesc = t(product.descKey);
-              const isExpanded = expandedProduct === product.nameKey;
-
-              const handleMobileToggle = () => {
-                setExpandedProduct(isExpanded ? null : product.nameKey);
-              };
-
-              const CardInner = (
-                <>
-                  <div className="aspect-video relative overflow-hidden bg-muted/40">
-                    <motion.img
-                      src={product.image}
-                      alt={productName}
-                      loading="lazy"
-                      className="w-full h-full object-cover object-top"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.4 }}
-                    />
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background/90 to-transparent"
-                    />
-                  </div>
-                  <div className="p-5 bg-background">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="font-semibold text-foreground text-base">
-                        {productName}
-                      </span>
-                      {product.url && (
-                        <motion.div
-                          className="shrink-0"
-                          whileHover={{ x: 2 }}
-                          transition={{ type: 'spring', stiffness: 400 }}
-                        >
-                          <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </motion.div>
-                      )}
-                    </div>
-                    <p 
-                      className={`mt-2 text-sm text-muted-foreground transition-all duration-300 ${
-                        isExpanded ? '' : 'line-clamp-2 group-hover:line-clamp-none'
-                      }`}
-                    >
-                      {productDesc}
-                    </p>
-                  </div>
-                </>
-              );
-
-              return (
-                <motion.div
-                  key={product.nameKey}
-                  className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)]"
-                  variants={itemVariants}
-                  whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleMobileToggle}
-                >
-                  {product.url ? (
-                    <a
-                      href={product.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => {
-                        // On mobile, first tap expands; second tap follows link
-                        if (window.innerWidth < 1024 && !isExpanded) {
-                          e.preventDefault();
-                        }
-                      }}
-                      className="block group relative overflow-hidden rounded-2xl bg-background border border-border ring-1 ring-border/50 hover:shadow-xl hover:shadow-primary/10 transition-shadow duration-300"
-                    >
-                      {CardInner}
-                    </a>
-                  ) : (
-                    <div className="block group relative overflow-hidden rounded-2xl bg-background border border-border ring-1 ring-border/50 cursor-pointer">
-                      {CardInner}
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </motion.div>
+        {/* Product grid */}
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 flex items-end justify-between gap-4 border-b border-border pb-5">
+            <h3 className="text-2xl font-bold text-foreground sm:text-3xl">{t('products.our')}</h3>
+            <span className="font-display text-sm text-muted-foreground">
+              <span className="text-gradient text-2xl font-bold">{String(products.length).padStart(2, '0')}</span> {t('products.count')}
+            </span>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6">
+            {products.map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

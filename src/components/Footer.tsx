@@ -1,91 +1,120 @@
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Link } from 'react-router-dom';
-import { Linkedin } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Linkedin, Mail, MapPin } from 'lucide-react';
 import ZagLabsLogo from '@/components/ZagLabsLogo';
 import ContactModal from '@/components/ContactModal';
+import { scrollToSection } from '@/lib/scroll';
+
+const sectionLinks = ['about', 'technologies', 'products', 'culture', 'careers', 'contact'];
 
 const Footer = () => {
   const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const footerLinks = [
-    { 
-      label: language === 'bg' ? 'Начало' : 'Home', 
-      href: '/',
-      type: 'link' as const
-    },
-    { 
-      label: language === 'bg' ? 'Общи условия' : 'Terms and Conditions', 
-      href: '/terms',
-      type: 'link' as const
-    },
-    { 
-      label: language === 'bg' ? 'Политика за поверителност' : 'Privacy Policy', 
-      href: '/privacy',
-      type: 'link' as const
-    },
-    { 
-      label: language === 'bg' ? 'Свържете се с нас' : 'Contact Us', 
-      href: '#',
-      type: 'button' as const
-    },
+  const goToSection = (id: string) => {
+    if (location.pathname === '/') {
+      scrollToSection(`#${id}`);
+    } else {
+      navigate('/');
+      window.setTimeout(() => scrollToSection(`#${id}`), 300);
+    }
+  };
+
+  const companyLinks = [
+    { label: language === 'bg' ? 'Общи условия' : 'Terms and Conditions', href: '/terms' },
+    { label: language === 'bg' ? 'Политика за поверителност' : 'Privacy Policy', href: '/privacy' },
   ];
 
   return (
-    <footer className="py-12 border-t border-border">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col gap-8">
-          {/* Footer Links */}
-          <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
-            {footerLinks.map((link, index) => (
-              <div key={link.label} className="flex items-center">
-                {link.type === 'button' ? (
-                  <button
-                    onClick={() => setIsContactModalOpen(true)}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </button>
-                ) : (
-                  <Link
-                    to={link.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                )}
-                {index < footerLinks.length - 1 && (
-                  <span className="text-muted-foreground/50 ml-2">|</span>
-                )}
-              </div>
-            ))}
-          </div>
+    <footer className="relative overflow-hidden border-t border-border bg-background pt-20">
+      <div aria-hidden className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-          {/* Logo, Copyright & Social */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <ZagLabsLogo className="h-7 w-auto" />
-            <span className="text-sm text-muted-foreground text-center">
-              © {currentYear} Z.A.G Labs LTD. {t('footer.rights')}
-            </span>
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
+          <div className="col-span-2 lg:col-span-1">
+            <ZagLabsLogo className="mb-5 h-8 w-auto" />
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">{t('footer.tagline')}</p>
             <a
               href="https://www.linkedin.com/company/z-a-g-labs-ltd"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="LinkedIn"
+              className="mt-6 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:border-transparent hover:bg-brand-gradient hover:text-white"
             >
-              <Linkedin className="w-5 h-5" />
+              <Linkedin className="h-4 w-4" />
             </a>
           </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">{t('footer.explore')}</h4>
+            <ul className="space-y-3 text-sm">
+              {sectionLinks.map((id) => (
+                <li key={id}>
+                  <button type="button" onClick={() => goToSection(id)} className="text-muted-foreground transition-colors hover:text-primary">
+                    {t(`nav.${id}`)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">{t('footer.company')}</h4>
+            <ul className="space-y-3 text-sm">
+              {companyLinks.map((l) => (
+                <li key={l.href}>
+                  <Link to={l.href} className="text-muted-foreground transition-colors hover:text-primary">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <button type="button" onClick={() => setIsContactModalOpen(true)} className="text-muted-foreground transition-colors hover:text-primary">
+                  {language === 'bg' ? 'Свържете се с нас' : 'Contact Us'}
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-span-2 lg:col-span-1">
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">{t('footer.getInTouch')}</h4>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span>
+                  {t('contact.address')}
+                  <br />
+                  {t('contact.city')}
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail className="h-4 w-4 shrink-0 text-primary" />
+                <a href="mailto:info@zaglabs.io" className="transition-colors hover:text-primary">
+                  info@zaglabs.io
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-border py-8 text-sm text-muted-foreground sm:flex-row">
+          <span>
+            © {currentYear} Z.A.G Labs LTD. {t('footer.rights')}
+          </span>
+          <span>Veliko Tarnovo · Bulgaria · EU</span>
         </div>
       </div>
 
-      <ContactModal 
-        open={isContactModalOpen} 
-        onOpenChange={setIsContactModalOpen} 
-      />
+      {/* Oversized wordmark */}
+      <div aria-hidden className="pointer-events-none select-none text-center font-display text-[22vw] font-bold leading-[0.8] tracking-tighter text-foreground/[0.04]">
+        ZAGLABS
+      </div>
+
+      <ContactModal open={isContactModalOpen} onOpenChange={setIsContactModalOpen} />
     </footer>
   );
 };

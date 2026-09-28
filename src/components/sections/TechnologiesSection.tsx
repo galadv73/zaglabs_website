@@ -1,56 +1,134 @@
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Cloud, Smartphone, Brain, Workflow, Shield, GitBranch } from 'lucide-react';
-import { ScrollAnimationWrapper } from '@/components/ScrollAnimationWrapper';
+import { Cloud, Smartphone, Brain, Workflow, Shield, GitBranch, LucideIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
+import SectionHeading from '@/components/SectionHeading';
+import SpotlightCard from '@/components/SpotlightCard';
+import { cn } from '@/lib/utils';
+
+interface Tech {
+  icon: LucideIcon;
+  key: string;
+  span: string;
+  featured?: boolean;
+  wide?: boolean;
+}
+
+// Bento layout: AI is the hero tile
+const technologies: Tech[] = [
+  { icon: Brain, key: 'tech.ai', span: 'md:col-span-2 md:row-span-2', featured: true },
+  { icon: Cloud, key: 'tech.cloud', span: '' },
+  { icon: Smartphone, key: 'tech.web', span: '' },
+  { icon: Workflow, key: 'tech.automation', span: '' },
+  { icon: Shield, key: 'tech.security', span: '' },
+  { icon: GitBranch, key: 'tech.devops', span: 'lg:col-span-4', wide: true },
+];
+
+/** Animated neural-net illustration for the featured AI tile. */
+const NeuralArt = () => {
+  const layers = [
+    [40, 100, 160],
+    [25, 70, 115, 160],
+    [55, 130],
+  ];
+  const xs = [40, 170, 300];
+  const edges: [number, number, number, number][] = [];
+  layers.forEach((ys, li) => {
+    if (li === layers.length - 1) return;
+    ys.forEach((y1) => layers[li + 1].forEach((y2) => edges.push([xs[li], y1, xs[li + 1], y2])));
+  });
+
+  return (
+    <svg viewBox="0 0 340 190" className="h-full w-full" aria-hidden>
+      <defs>
+        <linearGradient id="nn-grad" x1="0" x2="1">
+          <stop offset="0%" stopColor="hsl(var(--brand-1))" />
+          <stop offset="100%" stopColor="hsl(var(--brand-3))" />
+        </linearGradient>
+      </defs>
+      {edges.map(([x1, y1, x2, y2], i) => (
+        <g key={i}>
+          <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="hsl(var(--border))" strokeWidth="1" />
+          <motion.line
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="url(#nn-grad)"
+            strokeWidth="1.6"
+            strokeDasharray="6 200"
+            initial={{ strokeDashoffset: 0 }}
+            animate={{ strokeDashoffset: -206 }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'linear', delay: (i % 7) * 0.3 }}
+          />
+        </g>
+      ))}
+      {layers.map((ys, li) =>
+        ys.map((y) => (
+          <motion.circle
+            key={`${li}-${y}`}
+            cx={xs[li]}
+            cy={y}
+            r="7"
+            fill="hsl(var(--card))"
+            stroke="url(#nn-grad)"
+            strokeWidth="2"
+            animate={{ r: [7, 8.5, 7] }}
+            transition={{ duration: 2, repeat: Infinity, delay: (li + y / 100) * 0.4 }}
+          />
+        ))
+      )}
+    </svg>
+  );
+};
 
 const TechnologiesSection = () => {
   const { t } = useLanguage();
 
-  const technologies = [
-    { icon: Cloud, key: 'tech.cloud', color: 'from-blue-500/20 to-cyan-500/20' },
-    { icon: Smartphone, key: 'tech.web', color: 'from-violet-500/20 to-purple-500/20' },
-    { icon: Brain, key: 'tech.ai', color: 'from-primary/20 to-accent/20' },
-    { icon: Workflow, key: 'tech.automation', color: 'from-emerald-500/20 to-teal-500/20' },
-    { icon: Shield, key: 'tech.security', color: 'from-amber-500/20 to-orange-500/20' },
-    { icon: GitBranch, key: 'tech.devops', color: 'from-rose-500/20 to-pink-500/20' },
-  ];
-
   return (
-    <section id="technologies" className="py-24 lg:py-32">
-      <div className="container mx-auto px-6">
-        {/* Header */}
-        <ScrollAnimationWrapper className="max-w-2xl mx-auto text-center mb-16">
-          <p className="text-sm font-medium text-primary mb-2">{t('tech.title')}</p>
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            {t('tech.subtitle')}
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            {t('tech.description')}
-          </p>
-        </ScrollAnimationWrapper>
+    <section id="technologies" className="relative overflow-hidden bg-secondary/40 py-24 lg:py-36">
+      <div aria-hidden className="absolute inset-0 bg-grid mask-radial opacity-50" />
+      <div className="container relative mx-auto px-6">
+        <SectionHeading eyebrow={t('tech.title')} title={t('tech.subtitle')} description={t('tech.description')} />
 
-        {/* Tech Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mx-auto grid max-w-6xl auto-rows-[minmax(170px,auto)] gap-5 md:grid-cols-3 lg:grid-cols-4">
           {technologies.map((tech, index) => {
             const Icon = tech.icon;
-            const delayIndex = ((index % 3) + 1) as 1 | 2 | 3;
             return (
-              <ScrollAnimationWrapper
+              <motion.div
                 key={tech.key}
-                delay={delayIndex}
-                className="group relative p-8 rounded-2xl bg-secondary/50 border border-border hover:border-primary/20 transition-all duration-300"
+                className={cn(tech.span)}
+                initial={{ opacity: 0, y: 30, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.6, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
               >
-                {/* Gradient overlay on hover */}
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${tech.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-xl bg-background flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">
-                    <Icon className="w-7 h-7 text-primary" strokeWidth={1.5} />
+                <SpotlightCard className="h-full">
+                  <div className={cn('flex h-full flex-col p-7', tech.featured && 'lg:p-9', tech.wide && 'lg:flex-row lg:items-center lg:gap-6')}>
+                    <span
+                      className={cn(
+                        'mb-6 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6',
+                        tech.featured ? 'bg-brand-gradient text-white shadow-lg shadow-primary/30' : 'bg-primary/10 text-primary',
+                        tech.wide && 'lg:mb-0'
+                      )}
+                    >
+                      <Icon className="h-6 w-6" strokeWidth={1.6} />
+                    </span>
+                    <div>
+                      <h3 className={cn('font-bold text-foreground', tech.featured ? 'text-2xl lg:text-3xl' : 'text-lg')}>
+                        {t(tech.key)}
+                      </h3>
+                      <p className={cn('mt-2 text-muted-foreground', tech.featured ? 'max-w-md text-base' : 'text-sm')}>
+                        {t(`${tech.key}.desc`)}
+                      </p>
+                    </div>
+                    {tech.featured && (
+                      <div className="mt-auto hidden pt-6 md:block md:h-56">
+                        <NeuralArt />
+                      </div>
+                    )}
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {t(tech.key)}
-                  </h3>
-                </div>
-              </ScrollAnimationWrapper>
+                </SpotlightCard>
+              </motion.div>
             );
           })}
         </div>

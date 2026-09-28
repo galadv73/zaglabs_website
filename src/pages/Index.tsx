@@ -1,5 +1,7 @@
+import { MotionConfig } from 'framer-motion';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BackToTop from '@/components/BackToTop';
 import HeroSection from '@/components/sections/HeroSection';
 import AboutSection from '@/components/sections/AboutSection';
 import TechnologiesSection from '@/components/sections/TechnologiesSection';
@@ -10,19 +12,22 @@ import ContactSection from '@/components/sections/ContactSection';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <TechnologiesSection />
-        <ProductsSection />
-        <CultureSection />
-        <CareersSection />
-        <ContactSection />
-      </main>
-      <Footer />
-    </div>
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main>
+          <HeroSection />
+          <AboutSection />
+          <TechnologiesSection />
+          <ProductsSection />
+          <CultureSection />
+          <CareersSection />
+          <ContactSection />
+        </main>
+        <Footer />
+        <BackToTop />
+      </div>
+    </MotionConfig>
   );
 };
 
