@@ -17,7 +17,7 @@ const CareersSection = () => {
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}
-          className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-8 py-20 text-center shadow-2xl shadow-primary/20 sm:px-16 lg:py-28"
+          className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] px-5 py-16 text-center sm:rounded-[2.5rem] shadow-2xl shadow-primary/20 sm:px-16 sm:py-20 lg:py-28"
           initial={{ opacity: 0, y: 40, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: '-80px' }}
@@ -46,13 +46,13 @@ const CareersSection = () => {
             </motion.div>
 
             <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-teal-200/90">{t('careers.title')}</p>
-            <h2 className="mb-6 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">{t('careers.subtitle')}</h2>
+            <h2 className="mb-6 text-[2.25rem] font-bold leading-tight text-white sm:text-5xl lg:text-6xl">{t('careers.subtitle')}</h2>
             <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/75">{t('careers.description')}</p>
 
             <motion.button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="group inline-flex h-14 items-center gap-2 rounded-full bg-white px-8 text-base font-semibold text-slate-900 shadow-[0_0_50px_-10px_rgba(255,255,255,0.7)]"
+              className="group inline-flex h-14 items-center gap-2 whitespace-nowrap rounded-full bg-white px-7 text-base sm:px-8 font-semibold text-slate-900 shadow-[0_0_50px_-10px_rgba(255,255,255,0.7)]"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
             >

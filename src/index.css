@@ -204,6 +204,13 @@
       linear-gradient(135deg, hsl(var(--brand-1) / 0.5), hsl(var(--border)) 40%, hsl(var(--border)) 60%, hsl(var(--brand-3) / 0.5)) border-box;
   }
 
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .eyebrow {
     @apply inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary;
   }

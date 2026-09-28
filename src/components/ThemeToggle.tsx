@@ -12,7 +12,7 @@ const ThemeToggle = () => {
 
   if (!mounted) {
     return (
-      <button className="p-2 rounded-full bg-secondary" aria-label="Toggle theme">
+      <button className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary" aria-label="Toggle theme">
         <div className="w-5 h-5" />
       </button>
     );
@@ -29,7 +29,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
       aria-label="Toggle theme"
     >
       {currentTheme === 'dark' ? (

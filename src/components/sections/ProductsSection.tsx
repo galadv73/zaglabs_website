@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Users, Zap, Cpu, ArrowUpRight } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
@@ -74,7 +74,7 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
 
   return (
     <motion.div
-      className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+      className="w-[84%] shrink-0 snap-center sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
@@ -95,6 +95,26 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
 
 const ProductsSection = () => {
   const { t } = useLanguage();
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  // Phone carousel: track which card is centred, and let the dots jump to a card
+  const handleScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const center = el.scrollLeft + el.clientWidth / 2;
+    const cards = [...el.children] as HTMLElement[];
+    let best = 0;
+    cards.forEach((c, i) => {
+      if (Math.abs(c.offsetLeft + c.offsetWidth / 2 - center) < Math.abs(cards[best].offsetLeft + cards[best].offsetWidth / 2 - center)) best = i;
+    });
+    setActiveSlide(best);
+  };
+  const goToSlide = (i: number) => {
+    const el = scrollerRef.current;
+    const card = el?.children[i] as HTMLElement | undefined;
+    if (el && card) el.scrollTo({ left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2, behavior: 'smooth' });
+  };
 
   const approaches = [
     { icon: Users, titleKey: 'products.approach.dedicated', descKey: 'products.approach.dedicated.desc' },
@@ -155,11 +175,30 @@ const ProductsSection = () => {
               <span className="text-gradient text-2xl font-bold">{String(products.length).padStart(2, '0')}</span> {t('products.count')}
             </span>
           </div>
-          <div className="flex flex-wrap justify-center gap-6">
+          {/* Swipeable carousel on phones, wrapping grid from sm up */}
+          <div
+            ref={scrollerRef}
+            onScroll={handleScroll}
+            className="no-scrollbar relative -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 sm:mx-0 sm:flex-wrap sm:justify-center sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0"
+          >
             {products.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}
           </div>
+          <div className="mt-4 flex items-center justify-center gap-2 sm:hidden">
+            {products.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                aria-label={t(p.nameKey)}
+                onClick={() => goToSlide(i)}
+                className="flex h-8 items-center justify-center px-1"
+              >
+                <span className={`block h-1.5 rounded-full transition-all duration-300 ${activeSlide === i ? 'w-6 bg-brand-gradient' : 'w-1.5 bg-border'}`} />
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-center text-xs text-muted-foreground sm:hidden">{t('products.swipe')}</p>
         </div>
       </div>
     </section>

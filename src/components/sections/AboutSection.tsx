@@ -52,7 +52,7 @@ const AboutSection = () => {
             {/* Floating glass badges */}
             <motion.div
               style={{ y: badgeY }}
-              className="glass absolute -right-4 top-10 flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl sm:-right-8"
+              className="glass absolute right-3 top-6 flex items-center gap-3 rounded-2xl px-3 py-2.5 shadow-xl sm:-right-8 sm:top-10 sm:px-4 sm:py-3"
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-gradient text-white">
                 <MapPin className="h-5 w-5" />
@@ -63,7 +63,7 @@ const AboutSection = () => {
               </div>
             </motion.div>
             <motion.div
-              className="glass absolute -left-4 bottom-10 flex items-center gap-3 rounded-2xl px-4 py-3 shadow-xl sm:-left-8"
+              className="glass absolute bottom-6 left-3 flex items-center gap-3 rounded-2xl px-3 py-2.5 shadow-xl sm:-left-8 sm:bottom-10 sm:px-4 sm:py-3"
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             >

@@ -21,7 +21,7 @@ const BackToTop = () => {
           type="button"
           aria-label={t('nav.backToTop')}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-brand-gradient text-white shadow-lg shadow-primary/30"
+          className="fixed bottom-4 right-4 z-40 flex h-11 w-11 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-brand-gradient text-white shadow-lg shadow-primary/30"
           initial={{ opacity: 0, scale: 0.6, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 20 }}

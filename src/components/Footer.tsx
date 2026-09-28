@@ -101,7 +101,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-border py-8 text-sm text-muted-foreground sm:flex-row">
+        <div className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-border py-8 text-center text-sm text-muted-foreground sm:flex-row sm:text-left">
           <span>
             © {currentYear} Z.A.G Labs LTD. {t('footer.rights')}
           </span>

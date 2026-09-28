@@ -91,7 +91,7 @@ const Header = () => {
             className={cn(
               'flex items-center justify-between transition-all duration-500',
               scrolled
-                ? 'h-14 rounded-full glass pl-5 pr-2 shadow-lg shadow-black/5'
+                ? 'h-14 rounded-full glass pl-4 pr-1.5 shadow-lg shadow-black/5 sm:pl-5 sm:pr-2'
                 : 'h-20 border border-transparent px-0'
             )}
           >
@@ -101,7 +101,7 @@ const Header = () => {
               className="flex items-center"
               aria-label="ZagLabs home"
             >
-              <ZagLabsLogo className="h-7 w-auto" />
+              <ZagLabsLogo className="h-6 w-auto sm:h-7" />
             </button>
 
             {/* Desktop navigation with sliding active pill */}
@@ -131,15 +131,15 @@ const Header = () => {
               })}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <ThemeToggle />
               <button
                 type="button"
                 onClick={() => setLanguage(language === 'en' ? 'bg' : 'en')}
-                className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary/70"
+                className="flex h-10 items-center gap-1.5 rounded-full bg-secondary px-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary/70"
                 aria-label="Switch language"
               >
-                <Globe className="h-4 w-4 text-muted-foreground" />
+                <Globe className="hidden h-4 w-4 text-muted-foreground min-[360px]:block" />
                 {language.toUpperCase()}
               </button>
               <button
@@ -152,7 +152,7 @@ const Header = () => {
               </button>
               <button
                 type="button"
-                className="lg:hidden rounded-full p-2 text-foreground transition-colors hover:bg-secondary"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-secondary lg:hidden"
                 onClick={() => setMobileMenuOpen((v) => !v)}
                 aria-label={t('nav.menu')}
                 aria-expanded={mobileMenuOpen}

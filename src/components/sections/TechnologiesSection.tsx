@@ -15,12 +15,12 @@ interface Tech {
 
 // Bento layout: AI is the hero tile
 const technologies: Tech[] = [
-  { icon: Brain, key: 'tech.ai', span: 'md:col-span-2 md:row-span-2', featured: true },
+  { icon: Brain, key: 'tech.ai', span: 'sm:col-span-2 md:row-span-2', featured: true },
   { icon: Cloud, key: 'tech.cloud', span: '' },
   { icon: Smartphone, key: 'tech.web', span: '' },
   { icon: Workflow, key: 'tech.automation', span: '' },
   { icon: Shield, key: 'tech.security', span: '' },
-  { icon: GitBranch, key: 'tech.devops', span: 'lg:col-span-4', wide: true },
+  { icon: GitBranch, key: 'tech.devops', span: 'sm:col-span-2 md:col-span-1 lg:col-span-4', wide: true },
 ];
 
 /** Animated neural-net illustration for the featured AI tile. */
@@ -90,7 +90,7 @@ const TechnologiesSection = () => {
       <div className="container relative mx-auto px-6">
         <SectionHeading eyebrow={t('tech.title')} title={t('tech.subtitle')} description={t('tech.description')} />
 
-        <div className="mx-auto grid max-w-6xl auto-rows-[minmax(170px,auto)] gap-5 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl gap-3 sm:grid-cols-2 sm:gap-5 md:auto-rows-[minmax(170px,auto)] md:grid-cols-3 lg:grid-cols-4">
           {technologies.map((tech, index) => {
             const Icon = tech.icon;
             return (
@@ -103,10 +103,10 @@ const TechnologiesSection = () => {
                 transition={{ duration: 0.6, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
               >
                 <SpotlightCard className="h-full">
-                  <div className={cn('flex h-full flex-col p-7', tech.featured && 'lg:p-9', tech.wide && 'lg:flex-row lg:items-center lg:gap-6')}>
+                  <div className={cn('flex h-full flex-row items-start gap-4 p-5 md:flex-col md:gap-0 md:p-7', tech.featured && 'lg:p-9', tech.wide && 'lg:flex-row lg:items-center lg:gap-6')}>
                     <span
                       className={cn(
-                        'mb-6 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6',
+                        'flex h-11 w-11 shrink-0 md:mb-6 md:h-12 md:w-12 items-center justify-center rounded-2xl transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6',
                         tech.featured ? 'bg-brand-gradient text-white shadow-lg shadow-primary/30' : 'bg-primary/10 text-primary',
                         tech.wide && 'lg:mb-0'
                       )}
@@ -114,10 +114,10 @@ const TechnologiesSection = () => {
                       <Icon className="h-6 w-6" strokeWidth={1.6} />
                     </span>
                     <div>
-                      <h3 className={cn('font-bold text-foreground', tech.featured ? 'text-2xl lg:text-3xl' : 'text-lg')}>
+                      <h3 className={cn('font-bold text-foreground', tech.featured ? 'text-xl md:text-2xl lg:text-3xl' : 'text-base sm:text-lg')}>
                         {t(tech.key)}
                       </h3>
-                      <p className={cn('mt-2 text-muted-foreground', tech.featured ? 'max-w-md text-base' : 'text-sm')}>
+                      <p className={cn('mt-1 text-muted-foreground md:mt-2', tech.featured ? 'max-w-md text-sm md:text-base' : 'text-sm')}>
                         {t(`${tech.key}.desc`)}
                       </p>
                     </div>

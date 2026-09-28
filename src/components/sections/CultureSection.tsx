@@ -70,7 +70,7 @@ const CultureSection = () => {
             return (
               <motion.div
                 key={item.titleKey}
-                className="group flex items-start gap-4 rounded-2xl p-5 transition-colors hover:bg-background"
+                className="group flex items-start gap-4 rounded-2xl p-3 transition-colors hover:bg-background sm:p-5"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}

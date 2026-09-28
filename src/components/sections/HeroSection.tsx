@@ -79,15 +79,15 @@ const HeroSection = () => {
             style={{ y: contentY, opacity: contentOpacity }}
             className="text-center lg:text-left"
           >
-            <motion.div variants={item} className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">
+            <motion.div variants={item} className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur sm:mb-8 sm:px-4 sm:py-2">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-300 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-300" />
               </span>
-              <span className="text-sm font-medium text-white/80">{t('hero.badge')}</span>
+              <span className="text-xs font-medium text-white/80 sm:text-sm">{t('hero.badge')}</span>
             </motion.div>
 
-            <h1 className="mb-5 text-4xl font-bold leading-[1.05] text-white sm:text-6xl xl:text-7xl">
+            <h1 className="mb-5 text-[2.5rem] font-bold leading-[1.05] text-white sm:text-6xl xl:text-7xl">
               {words.map((w, i) => (
                 <Fragment key={`${w}-${i}`}>
                   <motion.span
@@ -135,14 +135,44 @@ const HeroSection = () => {
               </motion.button>
             </motion.div>
 
-            <motion.dl variants={item} className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-8 mx-auto lg:mx-0">
+            <motion.dl variants={item} className="mx-auto mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-white/10 pt-6 sm:mt-14 sm:gap-6 sm:pt-8 lg:mx-0">
               {stats.map((s) => (
                 <div key={s.label}>
-                  <dt className="font-display text-3xl font-bold text-white">{s.value}</dt>
+                  <dt className="font-display text-2xl font-bold text-white sm:text-3xl">{s.value}</dt>
                   <dd className="mt-1 text-xs leading-snug text-white/55 sm:text-sm">{s.label}</dd>
                 </div>
               ))}
             </motion.dl>
+
+            {/* Compact screenshot showcase for phones and tablets */}
+            <motion.div variants={item} aria-hidden className="relative mx-auto mt-12 h-[230px] w-full max-w-md sm:h-[330px] sm:max-w-xl lg:hidden">
+              <div className="absolute right-0 top-0 w-[74%] animate-float [animation-delay:-2s]">
+                <BrowserFrame
+                  src={productById('octotools').image}
+                  alt=""
+                  url={productById('octotools').url}
+                  imgClassName="aspect-[16/10]"
+                  className="border-white/10 opacity-70 shadow-2xl shadow-black/50"
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 w-[74%] animate-float">
+                <BrowserFrame
+                  src={productById('happyoffice').image}
+                  alt=""
+                  url={productById('happyoffice').url}
+                  imgClassName="aspect-[16/10]"
+                  className="border-white/15 shadow-2xl shadow-[hsl(var(--brand-1)/0.35)]"
+                />
+              </div>
+              <div className="absolute -bottom-3 right-1 w-[30%] animate-float [animation-delay:-4s]">
+                <BrowserFrame
+                  src={productById('skilli').image}
+                  alt=""
+                  imgClassName="aspect-[9/12]"
+                  className="border-white/15 shadow-2xl shadow-[hsl(var(--brand-3)/0.4)]"
+                />
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Floating product screenshots */}
