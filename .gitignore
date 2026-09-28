@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Google Drive / local
+desktop.ini
+zaglabs_website/

@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ZAGLabs Design System
+   Professional, calm, tech-forward aesthetic
+   All colors in HSL format
+*/
+
+@layer base {
+  :root {
+    /* Core backgrounds - Clean whites and soft grays */
+    --background: 0 0% 100%;
+    --foreground: 220 25% 10%;
+
+    /* Cards and elevated surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+
+    /* Primary - Deep teal/blue for trust and professionalism */
+    --primary: 200 80% 25%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Soft neutral gray */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 220 25% 10%;
+
+    /* Muted - Subtle text and backgrounds */
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 45%;
+
+    /* Accent - Subtle teal highlight */
+    --accent: 180 50% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders and inputs */
+    --border: 210 20% 90%;
+    --input: 210 20% 90%;
+    --ring: 200 80% 25%;
+
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Sidebar (if needed) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 200 80% 25%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent-foreground: 220 25% 10%;
+    --sidebar-border: 210 20% 90%;
+    --sidebar-ring: 200 80% 25%;
+  }
+
+  .dark {
+    /* Dark backgrounds - Deep charcoal */
+    --background: 220 20% 8%;
+    --foreground: 210 20% 95%;
+
+    /* Cards - Slightly elevated */
+    --card: 220 18% 12%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 18% 12%;
+    --popover-foreground: 210 20% 95%;
+
+    /* Primary - Lighter teal for dark mode */
+    --primary: 190 70% 50%;
+    --primary-foreground: 220 20% 8%;
+
+    /* Secondary - Dark gray surface */
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 95%;
+
+    /* Muted */
+    --muted: 220 15% 18%;
+    --muted-foreground: 215 15% 60%;
+
+    /* Accent */
+    --accent: 180 50% 45%;
+    --accent-foreground: 220 20% 8%;
+
+    /* Destructive */
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 210 20% 95%;
+
+    /* Borders */
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 190 70% 50%;
+
+    /* Sidebar */
+    --sidebar-background: 220 18% 10%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 190 70% 50%;
+    --sidebar-primary-foreground: 220 20% 8%;
+    --sidebar-accent: 220 15% 18%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 15% 20%;
+    --sidebar-ring: 190 70% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+    overflow-x: hidden;
+    touch-action: pan-y;
+  }
+
+  /* Prevent double-tap zoom on buttons and links */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+}
+
+/* Animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Scroll-triggered animations */
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .scroll-animate.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .scroll-animate-delay-1 {
+    transition-delay: 0.1s;
+  }
+
+  .scroll-animate-delay-2 {
+    transition-delay: 0.2s;
+  }
+
+  .scroll-animate-delay-3 {
+    transition-delay: 0.3s;
+  }
+}
